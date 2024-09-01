@@ -1,0 +1,183 @@
+{
+  "main": {
+    "id": "e2da0781d1d91fa0",
+    "type": "split",
+    "children": [
+      {
+        "id": "c15b7d23f9f95fb1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5949c9bfb3e87259",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Содержание.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "b560b87b9761fd2f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "= Прочее/Полезное.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "62267707b3fca685",
+    "type": "split",
+    "children": [
+      {
+        "id": "87a0c8a4890314fc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f4586c6ab57b35a9",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "72795e5fac67aafe",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "291c774b5c557622",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "b0af869fb966b42c",
+    "type": "split",
+    "children": [
+      {
+        "id": "e3a96a758ee8870a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ea637f7886d8cfb9",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Содержание.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "9633c1853bec92c0",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Содержание.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "dabca7c2f8f378f8",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "4a8d5ff980fcbb6a",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Содержание.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "5949c9bfb3e87259",
+  "lastOpenFiles": [
+    "= Прочее/Полезное.md",
+    "Содержание.md",
+    "= Прочее/Тема.md",
+    "= Прочее/Чеклист.md",
+    "0 - Введение/Введение.md",
+    "Untitled",
+    "5 - Список используемых источников/Список используемых источников.md",
+    "= Прочее",
+    "5 - Список используемых источников",
+    "4 - Заключение/Заключение.md",
+    "3 - Разработка и тестирование ПО/3.1 -.md",
+    "4 - Заключение",
+    "3 - Разработка и тестирование ПО",
+    "2 - Разработка протокола/2.1 -.md",
+    "2 - Разработка протокола",
+    "1 - Анализ предметной области/1.1 -.md",
+    "0 - Введение",
+    "1 - Анализ предметной области",
+    "Untitled 1.md"
+  ]
+}
