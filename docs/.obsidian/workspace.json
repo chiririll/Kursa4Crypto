@@ -4,28 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "c15b7d23f9f95fb1",
+        "id": "e99bef305509514b",
         "type": "tabs",
         "children": [
           {
-            "id": "5949c9bfb3e87259",
+            "id": "fc8771f85cac0915",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Содержание.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "b560b87b9761fd2f",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "= Прочее/Полезное.md",
+                "file": "0 - Введение/Введение.md",
                 "mode": "source",
                 "source": false
               }
@@ -97,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Содержание.md",
+                "file": "0 - Введение/Введение.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Содержание.md",
+                "file": "0 - Введение/Введение.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Содержание.md"
+                "file": "0 - Введение/Введение.md"
               }
             }
           }
@@ -158,13 +146,14 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "5949c9bfb3e87259",
+  "active": "fc8771f85cac0915",
   "lastOpenFiles": [
-    "= Прочее/Полезное.md",
-    "Содержание.md",
-    "= Прочее/Тема.md",
     "= Прочее/Чеклист.md",
+    "= Прочее/Полезное.md",
+    "= Прочее/Тема.md",
     "0 - Введение/Введение.md",
+    "1 - Анализ предметной области/1.1 -.md",
+    "Содержание.md",
     "Untitled",
     "5 - Список используемых источников/Список используемых источников.md",
     "= Прочее",
@@ -175,7 +164,6 @@
     "3 - Разработка и тестирование ПО",
     "2 - Разработка протокола/2.1 -.md",
     "2 - Разработка протокола",
-    "1 - Анализ предметной области/1.1 -.md",
     "0 - Введение",
     "1 - Анализ предметной области",
     "Untitled 1.md"
