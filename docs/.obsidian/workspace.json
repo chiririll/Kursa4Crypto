@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "0 - Введение/Введение.md",
+                "file": "Содержание.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "0 - Введение/Введение.md",
+                "file": "Содержание.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "0 - Введение/Введение.md",
+                "file": "Содержание.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "0 - Введение/Введение.md"
+                "file": "Содержание.md"
               }
             }
           }
@@ -149,8 +149,8 @@
   "active": "fc8771f85cac0915",
   "lastOpenFiles": [
     "= Прочее/Чеклист.md",
-    "= Прочее/Полезное.md",
     "= Прочее/Тема.md",
+    "= Прочее/Полезное.md",
     "0 - Введение/Введение.md",
     "1 - Анализ предметной области/1.1 -.md",
     "Содержание.md",
