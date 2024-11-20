@@ -1,23 +1,26 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            // Use IntelliSense to find out which attributes exist for C# debugging
-            // Use hover for the description of the existing attributes
-            // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md
-            "name": ".NET Core Launch (console)",
+            "name": "Kursa4Crypto",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/Kursa4Crypto/bin/Debug/net8.0/Kursa4Crypto.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Kursa4Crypto",
-            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Kursa4Crypto.Cli",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Kursa4Crypto.Cli/bin/Debug/net8.0/Kursa4Crypto.Cli.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Kursa4Crypto.Cli",
+            "console": "integratedTerminal",
             "stopAtEntry": false
         },
         {

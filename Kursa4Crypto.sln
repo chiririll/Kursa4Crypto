@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kursa4Crypto", "Kursa4Crypto\Kursa4Crypto.csproj", "{7C4BA970-E0BA-4545-8779-50E335860F13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kursa4Crypto.Core", "Kursa4Crypto.Core\Kursa4Crypto.Core.csproj", "{71620F94-4B4F-4619-9583-56369AEBEA1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kursa4Crypto.Cli", "Kursa4Crypto.Cli\Kursa4Crypto.Cli.csproj", "{CA8C7236-70F1-4463-98E4-AFF4FEAC4876}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{7C4BA970-E0BA-4545-8779-50E335860F13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C4BA970-E0BA-4545-8779-50E335860F13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C4BA970-E0BA-4545-8779-50E335860F13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71620F94-4B4F-4619-9583-56369AEBEA1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71620F94-4B4F-4619-9583-56369AEBEA1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71620F94-4B4F-4619-9583-56369AEBEA1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71620F94-4B4F-4619-9583-56369AEBEA1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA8C7236-70F1-4463-98E4-AFF4FEAC4876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA8C7236-70F1-4463-98E4-AFF4FEAC4876}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA8C7236-70F1-4463-98E4-AFF4FEAC4876}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA8C7236-70F1-4463-98E4-AFF4FEAC4876}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
