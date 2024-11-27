@@ -5,6 +5,7 @@ namespace Kursa4Crypto.Cli;
 
 public class Program
 {
+    private readonly HelpCommand helpCommand;
     private readonly List<ICommand> commands;
 
     private bool exitRequested = false;
@@ -12,11 +13,16 @@ public class Program
     public Program()
     {
         var baseCommandType = typeof(ICommand);
+
         commands = Assembly.GetAssembly(baseCommandType)?.GetTypes()
             .Where(t => !t.IsAbstract && baseCommandType.IsAssignableFrom(t))
+            .Where(t => t.GetCustomAttribute<AutoRegisterAttribute>() != null)
             .Select(t => Activator.CreateInstance(t))
             .Cast<ICommand>()
             .ToList() ?? new();
+
+        commands.Add(new ExitCommand());
+        helpCommand = new();
     }
 
     public static Program? Instance { get; private set; }
@@ -34,7 +40,8 @@ public class Program
 
     public void Run()
     {
-        PrintMotd();
+        Console.WriteLine("Distance bounding protocol program.");
+        Console.WriteLine($"Type '{HelpCommand.Name}' for command list.");
 
         while (!exitRequested)
         {
@@ -50,19 +57,9 @@ public class Program
     {
         foreach (var command in commands)
         {
-            command.Dispose();
+            if (command is IDisposable disposable)
+                disposable.Dispose();
         }
-    }
-
-    private void PrintMotd()
-    {
-        Console.WriteLine("Distance bounding protocol program.");
-        Console.WriteLine("Print help for command list.");
-    }
-
-    private void PrintUnknownCommandText(string command)
-    {
-        Console.WriteLine($"Unknown command '{command}'");
     }
 
     private void ReadPrompt()
@@ -70,23 +67,53 @@ public class Program
         Console.Write("\n> ");
 
         var prompt = Console.ReadLine();
-        var commandName = string.Empty;
 
-        if (!string.IsNullOrEmpty(prompt))
+        if (string.IsNullOrEmpty(prompt))
+            return;
+
+        var args = prompt.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var commandName = args[0].ToLower();
+
+        IExecutable? command = commandName switch
         {
-            var args = prompt.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            commandName = args[0].ToLower();
+            HelpCommand.Name => helpCommand,
+            _ => commands.Find(c => c.Name.Equals(commandName)),
+        };
 
-            foreach (var command in commands)
+        if (command == null)
+        {
+            Console.WriteLine($"Unknown command '{commandName}'. Type '{HelpCommand.Name}' to print list of available commands");
+        }
+        else
+        {
+            command.Execute(args);
+        }
+    }
+
+    private class HelpCommand : IExecutable
+    {
+        public const string Name = "help";
+
+        public void Execute(string[] args)
+        {
+            Console.WriteLine("Here list of all available commands:");
+
+            foreach (var command in Instance!.commands)
             {
-                if (!command.Name.Equals(commandName))
-                    continue;
-
-                command.Execute(args);
-                return;
+                Console.WriteLine($"{command.Name} - {command.Description};");
             }
         }
+    }
 
-        PrintUnknownCommandText(commandName);
+    private class ExitCommand : ICommand
+    {
+        public string Name => "exit";
+        public string Description => "Exit program";
+
+        public void Execute(string[] args)
+        {
+            Console.WriteLine("Exiting...");
+            Instance!.RequestExit();
+        }
     }
 }
