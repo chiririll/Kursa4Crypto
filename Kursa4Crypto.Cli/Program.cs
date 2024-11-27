@@ -12,36 +12,32 @@ public class Program
 
     public Program()
     {
-        var baseCommandType = typeof(ICommand);
+        State = new();
 
+        var baseCommandType = typeof(ICommand);
         commands = Assembly.GetAssembly(baseCommandType)?.GetTypes()
             .Where(t => !t.IsAbstract && baseCommandType.IsAssignableFrom(t))
             .Where(t => t.GetCustomAttribute<AutoRegisterAttribute>() != null)
-            .Select(t => Activator.CreateInstance(t))
+            .Select(t => Activator.CreateInstance(t, this))
             .Cast<ICommand>()
             .ToList() ?? new();
 
-        commands.Add(new ExitCommand());
-        helpCommand = new();
+        commands.Add(new ExitCommand(this));
+        helpCommand = new(commands);
     }
 
-    public static Program? Instance { get; private set; }
+    public SimulationState State { get; }
 
     public static void Main()
     {
-        if (Instance != null)
-            return;
-
-        Instance = new Program();
-        Instance.Run();
-
-        Instance = null;
+        var instance = new Program();
+        instance.Run();
     }
 
     public void Run()
     {
         Console.WriteLine("Distance bounding protocol program.");
-        Console.WriteLine($"Type '{HelpCommand.Name}' for command list.");
+        Console.WriteLine($"Type '{helpCommand.Name}' for command list.");
 
         while (!exitRequested)
         {
@@ -74,15 +70,15 @@ public class Program
         var args = prompt.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         var commandName = args[0].ToLower();
 
-        IExecutable? command = commandName switch
+        var command = commandName switch
         {
-            HelpCommand.Name => helpCommand,
+            HelpCommand.ConstName => helpCommand,
             _ => commands.Find(c => c.Name.Equals(commandName)),
         };
 
         if (command == null)
         {
-            Console.WriteLine($"Unknown command '{commandName}'. Type '{HelpCommand.Name}' to print list of available commands");
+            Console.WriteLine($"Unknown command '{commandName}'. Type '{helpCommand.Name}' to print list of available commands");
         }
         else
         {
@@ -90,30 +86,18 @@ public class Program
         }
     }
 
-    private class HelpCommand : IExecutable
+    private class ExitCommand(Program program) : ICommand
     {
-        public const string Name = "help";
+        private readonly Program program = program;
 
-        public void Execute(string[] args)
-        {
-            Console.WriteLine("Here list of all available commands:");
-
-            foreach (var command in Instance!.commands)
-            {
-                Console.WriteLine($"{command.Name} - {command.Description};");
-            }
-        }
-    }
-
-    private class ExitCommand : ICommand
-    {
         public string Name => "exit";
         public string Description => "Exit program";
+        public string? OptionsString => null;
 
         public void Execute(string[] args)
         {
             Console.WriteLine("Exiting...");
-            Instance!.RequestExit();
+            program.RequestExit();
         }
     }
 }

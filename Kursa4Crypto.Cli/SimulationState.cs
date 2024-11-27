@@ -6,8 +6,10 @@ public class SimulationState
 {
     public SimulationState()
     {
-        SignalSpace = new();
+        SignalSpaceSettings = new();
+        SignalSpace = new(SignalSpaceSettings);
     }
 
     public SignalSpace SignalSpace { get; private set; }
+    public SignalSpaceSettings SignalSpaceSettings { get; private set; }
 }

@@ -4,4 +4,5 @@ public interface ICommand : IExecutable
 {
     public string Name { get; }
     public string Description { get; }
+    public string? OptionsString { get; }
 }

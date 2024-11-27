@@ -2,26 +2,26 @@ using System.Numerics;
 
 namespace Kursa4Crypto.Core.Signals;
 
-public class ActiveSignal
+public class ActiveSignal : IActiveSignal
 {
-    public readonly byte[] data;
-    public readonly float initialForce;
-    public readonly Vector2 source;
-
     public ActiveSignal(byte[] data, Vector2 source, float force)
     {
-        this.data = data;
-        this.source = source;
-        this.initialForce = force;
+        Data = data;
+        Source = source;
+        InitialForce = force;
 
         Distance = 0f;
-        Force = initialForce;
+        Force = InitialForce;
     }
+
+    public byte[] Data { get; private set; }
+    public float InitialForce { get; private set; }
+    public Vector2 Source { get; private set; }
 
     public float Distance { get; private set; }
     public float Force { get; private set; }
 
-    public void SimulateStep(float distance, float fade)
+    public void Tick(float distance, float fade)
     {
         Distance += distance;
         Force -= fade;
@@ -33,13 +33,23 @@ public class ActiveSignal
 
         foreach (var listener in listeners)
         {
-            var sqrDistance = Vector2.DistanceSquared(listener.Position, source);
+            var sqrDistance = Vector2.DistanceSquared(listener.Position, Source);
 
             // Half step size
             if (MathF.Abs(sqrDistance - sqrCurrentDistance) > stepSize)
                 continue;
 
-            listener.ReceiveSignal(data, Force);
+            listener.ReceiveSignal(Data, Force);
         }
     }
+}
+
+public interface IActiveSignal
+{
+    public byte[] Data { get; }
+    public float InitialForce { get; }
+    public Vector2 Source { get; }
+
+    public float Distance { get; }
+    public float Force { get; }
 }
