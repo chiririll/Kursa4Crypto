@@ -1,4 +1,4 @@
-using Kursa4Crypto.Core.Signals;
+using Kursa4Crypto.Signals;
 
 namespace Kursa4Crypto.Cli;
 

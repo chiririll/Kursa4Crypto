@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace Kursa4Crypto.Core.Signals;
+namespace Kursa4Crypto.Signals;
 
 public interface ISignalListener
 {

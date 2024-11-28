@@ -15,7 +15,7 @@ public class HelpCommand(IEnumerable<ICommand> commands) : ICommand
 
         foreach (var command in commands)
         {
-            Console.Write($"{command.Name} ");
+            Console.Write($"  {command.Name} ");
             if (!string.IsNullOrEmpty(command.OptionsString))
             {
                 Console.Write($"{command.OptionsString} ");

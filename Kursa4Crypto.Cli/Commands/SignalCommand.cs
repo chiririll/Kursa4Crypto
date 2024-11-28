@@ -21,7 +21,7 @@ public class SignalCommand : BaseCommand, ICommand
 
     public override string Name => "signal";
     public override string Description => "Actions with signals";
-    public override string? OptionsString => "list";
+    public override string? OptionsString => "<subcommand>";
 
     public override void Execute(string[] args)
     {
@@ -72,7 +72,7 @@ public class SignalCommand : BaseCommand, ICommand
                 Console.WriteLine($"Signal #{index++}: "
                     + $"Source = ({signal.Source.X:0.##}, {signal.Source.Y:0.##}), "
                     + $"Distance = {signal.Distance}, "
-                    + $"Force = {signal.Force:0:####}/{signal.InitialForce:0:####}, "
+                    + $"Force = {signal.Force:0.####}/{signal.InitialForce:0.####}, "
                     + $"DataLength = {signal.Data.Length} bytes");
             }
         }

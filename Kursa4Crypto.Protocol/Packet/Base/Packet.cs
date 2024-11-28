@@ -1,4 +1,4 @@
-namespace Kursa4Crypto.Core;
+namespace Kursa4Crypto.Protocol;
 
 public readonly struct Packet
 {

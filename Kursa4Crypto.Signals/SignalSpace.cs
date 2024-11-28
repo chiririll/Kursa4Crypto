@@ -1,7 +1,7 @@
 using System.Numerics;
 using System.Reactive.Subjects;
 
-namespace Kursa4Crypto.Core.Signals;
+namespace Kursa4Crypto.Signals;
 
 public class SignalSpace
 {
