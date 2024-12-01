@@ -10,6 +10,7 @@ public class SignalSpace
     private readonly List<ISignalListener> listeners = new();
     private readonly LinkedList<ActiveSignal> activeSignals = new();
 
+    public readonly Subject<float> onTick = new();
     private readonly Subject<IActiveSignal> onSignalCreated = new();
     private readonly Subject<IActiveSignal> onSignalFadeOut = new();
 
@@ -23,6 +24,7 @@ public class SignalSpace
     public int ActiveSignalsCount => activeSignals.Count;
     public IEnumerable<IActiveSignal> ActiveSignals => activeSignals;
 
+    public IObservable<float> OnTick => onTick;
     public IObservable<IActiveSignal> OnSignalCreated => onSignalCreated;
     public IObservable<IActiveSignal> OnSignalFadeOut => onSignalFadeOut;
 
@@ -40,10 +42,7 @@ public class SignalSpace
 
     public void Tick()
     {
-        foreach (var listener in listeners)
-        {
-            listener.Tick(settings.StepDuration);
-        }
+        onTick.OnNext(settings.StepDuration);
 
         var fadedSignals = new List<ActiveSignal>();
         foreach (var signal in activeSignals)

@@ -7,6 +7,19 @@ public class SignalSpaceSettings : ISignalSpaceSettings
     public float SignalFadeThreshold { get; set; } = 0f;
 
     public float StepDuration { get; set; } = 0.08f;
+
+    public SignalSpaceSettings()
+    {
+    }
+
+    public void CopyFrom(SignalSpaceSettings other)
+    {
+        SignalSpeed = other.SignalSpeed;
+        SignalFade = other.SignalFade;
+        SignalFadeThreshold = other.SignalFadeThreshold;
+
+        StepDuration = other.StepDuration;
+    }
 }
 
 public interface ISignalSpaceSettings
