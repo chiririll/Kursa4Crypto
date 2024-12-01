@@ -3,18 +3,17 @@ using Kursa4Crypto.Cli.Commands.Base;
 namespace Kursa4Crypto.Cli.Commands;
 
 [AutoRegister]
-public class SimulateCommand(Program program) : BaseCommand(program), ICommand
+public class SimulateCommand(Program program) : BaseCommand(program)
 {
     public override string Name => "simulate";
     public override string Description => "Run simulation for 1 or n steps, or while all signals fade out";
-    public override string? OptionsString => "[{<steps>, signals}]";
 
     public override void Execute(string[] args)
     {
         if (args.Length < 2)
         {
             Console.WriteLine("Running 1 tick of simulation");
-            Program.State.SignalSpace.Tick();
+            Parent.State.SignalSpace.Tick();
             return;
         }
 
@@ -25,7 +24,7 @@ public class SimulateCommand(Program program) : BaseCommand(program), ICommand
 
             for (var i = 0; i < stepsCount; i++)
             {
-                Program.State.SignalSpace.Tick();
+                Parent.State.SignalSpace.Tick();
             }
 
             return;
@@ -33,16 +32,16 @@ public class SimulateCommand(Program program) : BaseCommand(program), ICommand
 
         switch (args[1].ToLower())
         {
-            case "help":
+            case HelpCommand.ConstName:
                 Console.WriteLine($"Use '{Name} <n>' to simulate n steps");
                 Console.WriteLine($"Or you can use just '{Name}' to simulate 1 step");
                 Console.WriteLine($"Also you can use '{Name} signals' to run simulation until all signals fade out");
                 return;
 
             case "signals":
-                while (Program.State.SignalSpace.ActiveSignalsCount > 0)
+                while (Parent.State.SignalSpace.ActiveSignalsCount > 0)
                 {
-                    Program.State.SignalSpace.Tick();
+                    Parent.State.SignalSpace.Tick();
                 }
                 return;
 

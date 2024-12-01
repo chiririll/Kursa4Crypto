@@ -1,8 +1,8 @@
 namespace Kursa4Crypto.Cli.Commands.Base;
 
-public abstract class BaseCommand(Program program) : ICommand
+public abstract class Command<TParent>(TParent parent) : ICommand
 {
-    protected Program Program { get; private set; } = program;
+    protected TParent Parent { get; } = parent;
 
     public abstract string Name { get; }
     public abstract string Description { get; }
@@ -10,3 +10,7 @@ public abstract class BaseCommand(Program program) : ICommand
 
     public abstract void Execute(string[] args);
 }
+
+public abstract class BaseCommand(Program program) : Command<Program>(program)
+{
+};

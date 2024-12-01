@@ -3,71 +3,32 @@ using Kursa4Crypto.Cli.Commands.Base;
 namespace Kursa4Crypto.Cli.Commands;
 
 [AutoRegister]
-public class SignalCommand : BaseCommand, ICommand
+public class SignalCommand(Program program) : BaseCompositeCommand(program)
 {
-    private readonly HelpCommand helpCommand;
-    private readonly List<ICommand> subcommands;
-
-    public SignalCommand(Program program) : base(program)
-    {
-        subcommands = new()
-        {
-            new ListSubcommand(this),
-            new AddSubcommand(this),
-        };
-
-        helpCommand = new(subcommands);
-    }
-
     public override string Name => "signal";
     public override string Description => "Actions with signals";
-    public override string? OptionsString => "<subcommand>";
 
-    public override void Execute(string[] args)
+    protected override List<ICommand> CreateChildren() =>
+    [
+        new ListSubcommand(this),
+        new AddSubcommand(this),
+    ];
+
+    private class ListSubcommand(SignalCommand signalCommand) : Command<SignalCommand>(signalCommand)
     {
-        var helpText = $"Type '{Name} {helpCommand.Name}' to print list of available subcommands";
+        public override string Name => "list";
+        public override string Description => "Display list of all active signals";
 
-        if (args.Length < 2)
+        public override void Execute(string[] args)
         {
-            Console.WriteLine(helpText);
-            return;
-        }
-
-        var subcommandName = args[1].ToLower();
-        var subcommand = subcommandName switch
-        {
-            HelpCommand.ConstName => helpCommand,
-            _ => subcommands.Find(c => c.Name.Equals(subcommandName)),
-        };
-
-        if (subcommand == null)
-        {
-            Console.WriteLine($"Unknown command '{subcommandName}'. " + helpText);
-        }
-        else
-        {
-            subcommand.Execute(args);
-        }
-    }
-
-    private class ListSubcommand(SignalCommand signalCommand) : ICommand
-    {
-        private readonly SignalCommand signalCommand = signalCommand;
-
-        public string Name => "list";
-        public string Description => "Display list of all active signals";
-        public string? OptionsString => null;
-
-        public void Execute(string[] args)
-        {
-            if (signalCommand.Program.State.SignalSpace.ActiveSignalsCount < 1)
+            if (Parent.Parent.State.SignalSpace.ActiveSignalsCount < 1)
             {
                 Console.WriteLine("No active signals found.");
                 return;
             }
 
             var index = 1;
-            foreach (var signal in signalCommand.Program.State.SignalSpace.ActiveSignals)
+            foreach (var signal in Parent.Parent.State.SignalSpace.ActiveSignals)
             {
                 Console.WriteLine($"Signal #{index++}: "
                     + $"Source = ({signal.Source.X:0.##}, {signal.Source.Y:0.##}), "
@@ -78,35 +39,34 @@ public class SignalCommand : BaseCommand, ICommand
         }
     }
 
-    private class AddSubcommand(SignalCommand signalCommand) : ICommand
+    private class AddSubcommand(SignalCommand signalCommand) : Command<SignalCommand>(signalCommand)
     {
-        private readonly SignalCommand signalCommand = signalCommand;
+        public override string Name => "add";
+        public override string Description => "Adds new signal to simulation";
+        public override string? OptionsString => "<x> <y> <force>";
 
-        public string Name => "add";
-        public string Description => "Adds new signal to simulation";
-        public string? OptionsString => "<x> <y> <force>";
-
-        public void Execute(string[] args)
+        public override void Execute(string[] args)
         {
-            if (args.Length < 5)
+            if (args.Length < 4)
             {
-                Console.WriteLine($"Usage: {signalCommand.Name} {Name} {OptionsString}");
+                Console.WriteLine($"Usage: {Parent.Name} {Name} {OptionsString}");
                 return;
             }
 
-            if (!float.TryParse(args[2], out var x) || !float.TryParse(args[3], out var y))
+            if (!float.TryParse(args[1], out var x) || !float.TryParse(args[2], out var y))
             {
                 Console.WriteLine("Invalid position!");
                 return;
             }
 
-            if (!float.TryParse(args[4], out var force))
+            if (!float.TryParse(args[3], out var force))
             {
                 Console.WriteLine("Invalid force!");
                 return;
             }
 
-            signalCommand.Program.State.SignalSpace.Transmit([], new(x, y), force);
+            Parent.Parent.State.SignalSpace.Transmit([], new(x, y), force);
+            Console.WriteLine("Signal added");
         }
     }
 }
