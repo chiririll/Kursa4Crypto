@@ -10,7 +10,7 @@ public class SignalSpace
     private readonly List<ISignalListener> listeners = new();
     private readonly LinkedList<ActiveSignal> activeSignals = new();
 
-    public readonly Subject<float> onTick = new();
+    private readonly Subject<float> onTick = new();
     private readonly Subject<IActiveSignal> onSignalCreated = new();
     private readonly Subject<IActiveSignal> onSignalFadeOut = new();
 
