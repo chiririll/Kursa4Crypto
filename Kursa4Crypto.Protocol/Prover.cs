@@ -95,6 +95,11 @@ public class Prover : IDisposable, ISignalListener
             ResultPacket resultPacket => HandleResultPacket(resultPacket),
             _ => false,
         };
+
+        if (!result)
+        {
+            SendMessage($"Cannot handle packet of type {packet.GetType()}");
+        }
     }
 
     private bool HandleChallengePacket(ChallengePacket challengePacket)
@@ -126,9 +131,8 @@ public class Prover : IDisposable, ISignalListener
 
     private void StopProveProcess()
     {
-
         challengeNumber = null;
-        proveTime = -0f;
+        proveTime = 0f;
     }
 
     private void SendMessage(string message) => messenger.OnNext((Id, message));
@@ -136,5 +140,6 @@ public class Prover : IDisposable, ISignalListener
     public void Dispose()
     {
         signalSpace.RemoveListener(this);
+        disp.Dispose();
     }
 }
