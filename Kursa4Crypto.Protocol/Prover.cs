@@ -1,57 +1,15 @@
-using System.Numerics;
-using System.Reactive.Disposables;
-using System.Reactive.Subjects;
-using System.Security.Cryptography;
 using Kursa4Crypto.Signals;
 
 namespace Kursa4Crypto.Protocol;
 
-public class Prover : IDisposable, ISignalListener
+public class Prover(SignalSpace signalSpace) : ProtocolEntity(IdService.GetProverId(), signalSpace)
 {
-    private readonly RSACryptoServiceProvider csp = new();
-    private readonly Random random = new();
-
-    private readonly SignalSpace signalSpace;
-
-    private readonly Subject<(int, string)> messenger = new();
-    private readonly CompositeDisposable disp = new();
-
-    private long? challengeNumber = null;
     private float proveTime;
+    private long? challengeNumber = null;
 
-    public int Id { get; }
-    public Vector2 Position { get; set; }
-
-    public float TransmitForce { get; set; }
     public float ProveTimeout { get; set; }
 
-    public IObservable<(int proverId, string message)> Messenger => messenger;
-
-    public Prover(int id, SignalSpace signalSpace)
-    {
-        Id = id;
-
-        this.signalSpace = signalSpace;
-        signalSpace.AddListener(this);
-        disp.Add(signalSpace.OnTick.Subscribe(Tick));
-    }
-
-    private void Tick(float deltaTime)
-    {
-        if (!challengeNumber.HasValue)
-            return;
-
-        proveTime += deltaTime;
-
-        if (proveTime < ProveTimeout)
-            return;
-
-        StopProveProcess();
-
-        SendMessage("Prove process timeout reached, aborting");
-    }
-
-    public void Prove()
+    public void Prove(int verifierId)
     {
         if (challengeNumber.HasValue)
         {
@@ -59,16 +17,24 @@ public class Prover : IDisposable, ISignalListener
             return;
         }
 
+        var verifierKey = KeysStorage.Instance.GetVerifierKey(verifierId);
+        if (!verifierKey.HasValue)
+        {
+            SendMessage($"Cannot start prove process because verifier with id {verifierId} does not exists!");
+            return;
+        }
+
         proveTime = 0f;
         challengeNumber = random.NextInt64();
 
         var data = new InitializationPacket.Data(challengeNumber.Value);
-        var packet = new InitializationPacket(Id, csp.Encrypt(data.Serialize(), false));
+        var encryptedData = EncryptionService.Encrypt(data.Serialize(), verifierKey.Value);
+        var packet = new InitializationPacket(Id, encryptedData);
 
         signalSpace.Transmit(packet.Serialize(), Position, TransmitForce);
     }
 
-    public void ReceiveSignal(byte[] signal, float force)
+    public override void ReceiveSignal(byte[] signal, float force)
     {
         if (!challengeNumber.HasValue)
         {
@@ -102,6 +68,21 @@ public class Prover : IDisposable, ISignalListener
         }
     }
 
+    protected override void Tick(float deltaTime)
+    {
+        if (!challengeNumber.HasValue)
+            return;
+
+        proveTime += deltaTime;
+
+        if (proveTime < ProveTimeout)
+            return;
+
+        StopProveProcess();
+
+        SendMessage("Prove process timeout reached, aborting");
+    }
+
     private bool HandleChallengePacket(ChallengePacket challengePacket)
     {
         if (!challengeNumber.HasValue)
@@ -118,7 +99,7 @@ public class Prover : IDisposable, ISignalListener
         if (!challengeNumber.HasValue)
             return false;
 
-        var dataBytes = csp.Decrypt(resultPacket.EncryptedData, false);
+        var dataBytes = EncryptionService.Decrypt(resultPacket.EncryptedData, privateKey);
         var data = ResultPacket.Data.Deserialize(dataBytes);
 
         var resultString = data.Success ? "Success" : "Failed";
@@ -133,13 +114,5 @@ public class Prover : IDisposable, ISignalListener
     {
         challengeNumber = null;
         proveTime = 0f;
-    }
-
-    private void SendMessage(string message) => messenger.OnNext((Id, message));
-
-    public void Dispose()
-    {
-        signalSpace.RemoveListener(this);
-        disp.Dispose();
     }
 }
