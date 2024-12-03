@@ -18,10 +18,8 @@ public class KeysStorage
     {
     }
 
-    public RSAParameters? GetProverKey(int proverId) => GetKey(proverId, proverKeys);
-    public RSAParameters? GetVerifierKey(int verifierId) => GetKey(verifierId, verifierKeys);
-
-    private static RSAParameters? GetKey(int id, Dictionary<int, RSAParameters> keys) => keys.TryGetValue(id, out var key) ? key : null;
+    public bool TryGetProverKey(int proverId, out RSAParameters key) => proverKeys.TryGetValue(proverId, out key);
+    public bool TryGetVerifierKey(int verifierId, out RSAParameters key) => verifierKeys.TryGetValue(verifierId, out key);
 
     public void RegisterEntity(ProtocolEntity entity)
     {

@@ -43,8 +43,26 @@ public abstract class ProtocolEntity : ISignalListener, IDisposable
     public IObservable<(int proverId, string message)> Messenger => messenger;
 
     protected abstract void Tick(float deltaTime);
-    public abstract void ReceiveSignal(byte[] signal, float force);
 
+    public virtual void ReceiveSignal(byte[] signal, float force)
+    {
+        var packet = PacketParser.Parse(signal);
+        if (packet == null)
+        {
+            SendMessage("Received invalid packet!");
+            return;
+        }
+
+        var message = HandlePacket(packet);
+        if (!string.IsNullOrEmpty(message))
+        {
+            SendMessage($"Cannot handle packet of type {packet.GetType()} from prover {packet.ProverId}: {message}");
+        }
+    }
+
+    protected abstract string? HandlePacket(Packet packet);
+
+    protected void Transmit(byte[] data) => signalSpace.Transmit(data, Position, TransmitForce);
     protected void SendMessage(string message) => messenger.OnNext((Id, message));
 
     public virtual void Dispose()

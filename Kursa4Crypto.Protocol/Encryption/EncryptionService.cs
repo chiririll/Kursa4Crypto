@@ -28,4 +28,25 @@ public class EncryptionService
         rsa.Dispose();
         return encryptedData;
     }
+
+    public static bool TryDecrypt(byte[] data, RSAParameters privateKey, out byte[] decryptedData)
+    {
+        var rsa = new RSACryptoServiceProvider(KeySize);
+        rsa.ImportParameters(privateKey);
+
+        try
+        {
+            decryptedData = rsa.Decrypt(data, DoOAEPPadding);
+            return true;
+        }
+        catch (CryptographicException)
+        {
+            decryptedData = [];
+            return false;
+        }
+        finally
+        {
+            rsa.Dispose();
+        }
+    }
 }

@@ -4,115 +4,92 @@ namespace Kursa4Crypto.Protocol;
 
 public class Prover(SignalSpace signalSpace) : ProtocolEntity(IdService.GetProverId(), signalSpace)
 {
-    private float proveTime;
-    private long? challengeNumber = null;
+    private ProveProcessState? proveProcess;
 
     public float ProveTimeout { get; set; }
 
     public void Prove(int verifierId)
     {
-        if (challengeNumber.HasValue)
+        if (proveProcess != null)
         {
             SendMessage("Prove process already running!");
             return;
         }
 
-        var verifierKey = KeysStorage.Instance.GetVerifierKey(verifierId);
-        if (!verifierKey.HasValue)
+        if (!KeysStorage.Instance.TryGetVerifierKey(verifierId, out var verifierKey))
         {
             SendMessage($"Cannot start prove process because verifier with id {verifierId} does not exists!");
             return;
         }
 
-        proveTime = 0f;
-        challengeNumber = random.NextInt64();
+        proveProcess = new(random.NextInt64());
 
-        var data = new InitializationPacket.Data(challengeNumber.Value);
-        var encryptedData = EncryptionService.Encrypt(data.Serialize(), verifierKey.Value);
+        var data = new InitializationPacket.Data(proveProcess.ChallengeNumber);
+        var encryptedData = EncryptionService.Encrypt(data.Serialize(), verifierKey);
         var packet = new InitializationPacket(Id, encryptedData);
 
-        signalSpace.Transmit(packet.Serialize(), Position, TransmitForce);
+        Transmit(packet.Serialize());
     }
 
-    public override void ReceiveSignal(byte[] signal, float force)
+    protected override string? HandlePacket(Packet packet)
     {
-        if (!challengeNumber.HasValue)
-        {
-            SendMessage("Ignoring signal because prove process has not been initialized");
-            return;
-        }
-
-        var packet = PacketParser.Parse(signal);
-        if (packet == null)
-        {
-            SendMessage("Received invalid packet!");
-            return;
-        }
-
-        if (packet.ProverId != Id)
-        {
-            SendMessage("Ignoring packet with other id");
-            return;
-        }
-
-        var result = packet switch
-        {
-            ChallengePacket challengePacket => HandleChallengePacket(challengePacket),
-            ResultPacket resultPacket => HandleResultPacket(resultPacket),
-            _ => false,
-        };
-
-        if (!result)
-        {
-            SendMessage($"Cannot handle packet of type {packet.GetType()}");
-        }
+        return packet.ProverId != Id
+            ? "Ignoring packet with other prover id"
+            : packet switch
+            {
+                ChallengePacket challengePacket => HandleChallengePacket(challengePacket),
+                ResultPacket resultPacket => HandleResultPacket(resultPacket),
+                _ => "Unsupported packet",
+            };
     }
 
     protected override void Tick(float deltaTime)
     {
-        if (!challengeNumber.HasValue)
+        if (proveProcess == null)
             return;
 
-        proveTime += deltaTime;
+        proveProcess.ProveTime += deltaTime;
 
-        if (proveTime < ProveTimeout)
+        if (proveProcess.ProveTime < ProveTimeout)
             return;
 
-        StopProveProcess();
-
+        proveProcess = null;
         SendMessage("Prove process timeout reached, aborting");
     }
 
-    private bool HandleChallengePacket(ChallengePacket challengePacket)
+    private string? HandleChallengePacket(ChallengePacket challengePacket)
     {
-        if (!challengeNumber.HasValue)
-            return false;
+        if (proveProcess == null)
+            return "Prove process has not being started";
 
-        var response = new ResponsePacket(Id, challengePacket.ModifiedNumber - challengeNumber.Value);
-        signalSpace.Transmit(response.Serialize(), Position, TransmitForce);
+        var response = new ResponsePacket(Id, challengePacket.ModifiedNumber - proveProcess.ChallengeNumber);
+        Transmit(response.Serialize());
 
-        return true;
+        return null;
     }
 
-    private bool HandleResultPacket(ResultPacket resultPacket)
+    private string? HandleResultPacket(ResultPacket resultPacket)
     {
-        if (!challengeNumber.HasValue)
-            return false;
+        if (proveProcess == null)
+            return "Prove process has not being started";
 
-        var dataBytes = EncryptionService.Decrypt(resultPacket.EncryptedData, privateKey);
+        if (!EncryptionService.TryDecrypt(resultPacket.EncryptedData, privateKey, out var dataBytes))
+            return "Decryption failed";
+
         var data = ResultPacket.Data.Deserialize(dataBytes);
 
         var resultString = data.Success ? "Success" : "Failed";
         SendMessage($"Received result packet: {resultString}, distance = {data.Distance}");
 
-        StopProveProcess();
+        proveProcess = null;
 
-        return true;
+        return null;
     }
 
-    private void StopProveProcess()
+    private class ProveProcessState(long challengeNumber)
     {
-        challengeNumber = null;
-        proveTime = 0f;
+        public long ChallengeNumber { get; } = challengeNumber;
+
+        public float ProveTime { get; set; }
     }
 }
