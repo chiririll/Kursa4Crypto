@@ -22,9 +22,9 @@ public class Prover(SignalSpace signalSpace) : ProtocolEntity(IdService.GetProve
             return;
         }
 
-        proveProcess = new(random.NextInt64());
+        proveProcess = new(random.NextInt64(), random.NextInt64());
 
-        var data = new InitializationPacket.Data(proveProcess.ChallengeNumber);
+        var data = new InitializationPacket.Data(proveProcess.ChallengeNumber, proveProcess.ResponseNumber);
         var encryptedData = EncryptionService.Encrypt(data.Serialize(), verifierKey);
         var packet = new InitializationPacket(Id, encryptedData);
 
@@ -62,7 +62,10 @@ public class Prover(SignalSpace signalSpace) : ProtocolEntity(IdService.GetProve
         if (proveProcess == null)
             return "Prove process has not being started";
 
-        var response = new ResponsePacket(Id, challengePacket.ModifiedNumber - proveProcess.ChallengeNumber);
+        if (challengePacket.ChallengeNumber != proveProcess.ChallengeNumber)
+            return "Invalid challenge number";
+
+        var response = new ResponsePacket(Id, proveProcess.ResponseNumber);
         Transmit(response.Serialize());
 
         return null;
@@ -86,9 +89,10 @@ public class Prover(SignalSpace signalSpace) : ProtocolEntity(IdService.GetProve
         return null;
     }
 
-    private class ProveProcessState(long challengeNumber)
+    private class ProveProcessState(long challengeNumber, long responseNumber)
     {
         public long ChallengeNumber { get; } = challengeNumber;
+        public long ResponseNumber { get; } = responseNumber;
 
         public float ProveTime { get; set; }
     }

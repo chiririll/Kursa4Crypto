@@ -69,51 +69,54 @@ public abstract class EncryptedPacket(PacketType type, int proverId, byte[] encr
 public class InitializationPacket(int proverId, byte[] encryptedData)
     : EncryptedPacket(PacketType.Initialization, proverId, encryptedData)
 {
-    public class Data(long randomNumber) : BaseData
+    public class Data(long challengeNumber, long responseNumber) : BaseData
     {
-        public long RandomNumber { get; } = randomNumber;
+        public long ChallengeNumber { get; } = challengeNumber;
+        public long ResponseNumber { get; } = responseNumber;
 
         protected override List<byte> GetBytes()
         {
             var bytes = base.GetBytes();
 
-            bytes.AddRange(BitConverter.GetBytes(RandomNumber));
+            bytes.AddRange(BitConverter.GetBytes(ChallengeNumber));
+            bytes.AddRange(BitConverter.GetBytes(ResponseNumber));
 
             return bytes;
         }
 
         public static Data Deserialize(byte[] dataBytes)
         {
-            var randomNumber = BitConverter.ToInt64(dataBytes, 0);
+            var challengeNumber = BitConverter.ToInt64(dataBytes, 0);
+            var responseNumber = BitConverter.ToInt64(dataBytes, 8);
 
-            return new(randomNumber);
+            return new(challengeNumber, responseNumber);
         }
     }
 }
 
-public class ChallengePacket(int proverId, long modifiedNumber) : Packet(PacketType.Challenge, proverId)
+public class ChallengePacket(int proverId, long challengeNumber) : Packet(PacketType.Challenge, proverId)
 {
-    public long ModifiedNumber { get; } = modifiedNumber;
+    public long ChallengeNumber { get; } = challengeNumber;
 
     protected override List<byte> GetBytes()
     {
         var bytes = base.GetBytes();
 
-        bytes.AddRange(BitConverter.GetBytes(ModifiedNumber));
+        bytes.AddRange(BitConverter.GetBytes(ChallengeNumber));
 
         return bytes;
     }
 }
 
-public class ResponsePacket(int proverId, long numberDelta) : Packet(PacketType.Response, proverId)
+public class ResponsePacket(int proverId, long responseNumber) : Packet(PacketType.Response, proverId)
 {
-    public long NumberDelta { get; } = numberDelta;
+    public long ResponseNumber { get; } = responseNumber;
 
     protected override List<byte> GetBytes()
     {
         var bytes = base.GetBytes();
 
-        bytes.AddRange(BitConverter.GetBytes(NumberDelta));
+        bytes.AddRange(BitConverter.GetBytes(ResponseNumber));
 
         return bytes;
     }

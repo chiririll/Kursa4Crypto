@@ -44,10 +44,10 @@ public class Verifier(SignalSpace signalSpace) : ProtocolEntity(IdService.GetVer
 
         var data = InitializationPacket.Data.Deserialize(dataBytes);
 
-        var processState = new ProveProcessState(packet.ProverId, data.RandomNumber, random.NextInt64());
+        var processState = new ProveProcessState(packet.ProverId, data.ChallengeNumber, data.ResponseNumber);
         processes[packet.ProverId] = processState;
 
-        var challengePacket = new ChallengePacket(packet.ProverId, processState.RandomNumber + processState.ChallengeNumber);
+        var challengePacket = new ChallengePacket(packet.ProverId, processState.ChallengeNumber);
         Transmit(challengePacket.Serialize());
 
         return null;
@@ -58,8 +58,8 @@ public class Verifier(SignalSpace signalSpace) : ProtocolEntity(IdService.GetVer
         if (!processes.TryGetValue(packet.ProverId, out var processState))
             return $"Prove process is not running";
 
-        if (packet.NumberDelta != processState.ChallengeNumber)
-            return $"Invalid number delta";
+        if (packet.ResponseNumber != processState.ResponseNumber)
+            return $"Invalid response number";
 
         if (!KeysStorage.Instance.TryGetProverKey(packet.ProverId, out var proverKey))
             return "Prover key not found";
@@ -76,11 +76,11 @@ public class Verifier(SignalSpace signalSpace) : ProtocolEntity(IdService.GetVer
         return null;
     }
 
-    private class ProveProcessState(int proverId, long randomNumber, long challengeNumber)
+    private class ProveProcessState(int proverId, long challengeNumber, long responseNumber)
     {
         public int ProverId { get; } = proverId;
-        public long RandomNumber { get; } = randomNumber;
         public long ChallengeNumber { get; } = challengeNumber;
+        public long ResponseNumber { get; } = responseNumber;
 
         public float ProveTime { get; set; } = 0f;
     }
