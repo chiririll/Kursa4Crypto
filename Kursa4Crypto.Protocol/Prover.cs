@@ -6,8 +6,6 @@ public class Prover(SignalSpace signalSpace) : ProtocolEntity(IdService.GetProve
 {
     private ProveProcessState? proveProcess;
 
-    public float ProveTimeout { get; set; }
-
     public void Prove(int verifierId)
     {
         if (proveProcess != null)

@@ -39,6 +39,7 @@ public abstract class ProtocolEntity : ISignalListener, IDisposable
 
     public Vector2 Position { get; set; }
     public float TransmitForce { get; set; }
+    public float ProveTimeout { get; set; }
 
     public IObservable<(int proverId, string message)> Messenger => messenger;
 
@@ -65,9 +66,19 @@ public abstract class ProtocolEntity : ISignalListener, IDisposable
     protected void Transmit(byte[] data) => signalSpace.Transmit(data, Position, TransmitForce);
     protected void SendMessage(string message) => messenger.OnNext((Id, message));
 
+    public override string ToString()
+    {
+        return $"{GetType().Name} {Id}: "
+            + $"pos: ({Position.X:0.##}, {Position.Y:0.##}) "
+            + $"force: {TransmitForce:0.##} "
+            + $"timeout: {ProveTimeout:0.##} ";
+    }
+
     public virtual void Dispose()
     {
         signalSpace.RemoveListener(this);
         disp.Dispose();
+
+        KeysStorage.Instance.UnregisterEntity(this);
     }
 }

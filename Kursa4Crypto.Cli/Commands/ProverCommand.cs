@@ -32,10 +32,7 @@ public class ProverCommand(Program program) : BaseCompositeCommand(program)
 
             foreach (var prover in state.Provers.Values)
             {
-                Console.WriteLine($"Prover {prover.Id}: "
-                    + $"pos: ({prover.Position.X:0.##}, {prover.Position.Y:0.##}) "
-                    + $"force: {prover.TransmitForce:0.##} "
-                    + $"timeout: {prover.ProveTimeout:0.##}");
+                Console.WriteLine(prover.ToString());
             }
         }
     }

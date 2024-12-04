@@ -6,7 +6,6 @@ public class Verifier(SignalSpace signalSpace) : ProtocolEntity(IdService.GetVer
 {
     private readonly Dictionary<int, ProveProcessState> processes = new();
 
-    public float ProveTimeout { get; set; }
     public float MaxProverDistance { get; set; }
 
     protected override void Tick(float deltaTime)

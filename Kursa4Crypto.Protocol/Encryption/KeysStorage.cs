@@ -1,5 +1,6 @@
 
 using System.Security.Cryptography;
+
 namespace Kursa4Crypto.Protocol;
 
 public class KeysStorage
@@ -12,10 +13,6 @@ public class KeysStorage
     static KeysStorage()
     {
         Instance = new();
-    }
-
-    private KeysStorage()
-    {
     }
 
     public bool TryGetProverKey(int proverId, out RSAParameters key) => proverKeys.TryGetValue(proverId, out key);
@@ -34,5 +31,20 @@ public class KeysStorage
             throw new InvalidOperationException($"Cannot register {entity.GetType().Name} with id {entity.Id} because it already registered!");
 
         keys.Add(entity.Id, entity.PublicKey);
+    }
+
+    public void UnregisterEntity(ProtocolEntity entity)
+    {
+        var keys = entity switch
+        {
+            Prover => proverKeys,
+            Verifier => verifierKeys,
+            _ => throw new NotImplementedException($"Cannot unregister key for {entity.GetType().Name}!"),
+        };
+
+        if (!keys.ContainsKey(entity.Id))
+            throw new InvalidOperationException($"Cannot unregister {entity.GetType().Name} with id {entity.Id} because it was not registered!");
+
+        keys.Remove(entity.Id);
     }
 }
