@@ -56,7 +56,7 @@ public abstract class ProtocolEntity : ISignalListener, IDisposable
         var message = HandlePacket(packet!);
         if (!string.IsNullOrEmpty(message))
         {
-            SendMessage($"Cannot handle packet of type {packet!.GetType().Name} from prover {packet.ProverId}: {message}");
+            SendMessage($"Cannot handle {packet!.GetType().Name}, Prover #{packet.ProverId}: {message}");
         }
     }
 

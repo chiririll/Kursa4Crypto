@@ -20,7 +20,7 @@ public abstract class ProtocolEntityCommand<TEntity, TCommand>(Program program, 
 
     protected virtual void LogMessage(int entityId, string message)
     {
-        Console.WriteLine($"{entityNameTitle} #{entityId}: {message}");
+        Console.WriteLine($"[{entityNameTitle} #{entityId}] {message}");
     }
 
     protected class ListCommand(TCommand parent) : Command<TCommand>(parent)

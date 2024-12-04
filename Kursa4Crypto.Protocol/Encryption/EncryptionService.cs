@@ -9,7 +9,7 @@ public class EncryptionService
 
     public static byte[] Encrypt(byte[] data, RSAParameters publicKey)
     {
-        var rsa = new RSACryptoServiceProvider(KeySize);
+        var rsa = new RSACryptoServiceProvider();
         rsa.ImportParameters(publicKey);
 
         var encryptedData = rsa.Encrypt(data, DoOAEPPadding);
@@ -20,7 +20,7 @@ public class EncryptionService
 
     public static byte[] Decrypt(byte[] data, RSAParameters privateKey)
     {
-        var rsa = new RSACryptoServiceProvider(KeySize);
+        var rsa = new RSACryptoServiceProvider();
         rsa.ImportParameters(privateKey);
 
         var encryptedData = rsa.Decrypt(data, DoOAEPPadding);
@@ -31,7 +31,7 @@ public class EncryptionService
 
     public static bool TryDecrypt(byte[] data, RSAParameters privateKey, out byte[] decryptedData)
     {
-        var rsa = new RSACryptoServiceProvider(KeySize);
+        var rsa = new RSACryptoServiceProvider();
         rsa.ImportParameters(privateKey);
 
         try

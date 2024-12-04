@@ -27,7 +27,7 @@ public class Prover(SignalSpace signalSpace) : ProtocolEntity(IdService.GetProve
         var packet = new InitializationPacket(Id, encryptedData);
         Transmit(packet.Serialize());
 
-        SendMessage($"Starting proving process: verifier={verifierId}, challenge={data.ChallengeNumber}, response={data.ResponseNumber}");
+        SendMessage($"Starting proving process: verifier={verifierId}, challenge={proveProcess.ChallengeNumber}, response={proveProcess.ResponseNumber}");
     }
 
     protected override string? HandlePacket(Packet packet)
