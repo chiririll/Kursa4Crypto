@@ -74,6 +74,8 @@ public abstract class ProtocolEntity : ISignalListener, IDisposable
             + $"timeout: {ProveTimeout:0.##} ";
     }
 
+    public void AddDisp(IDisposable disposable) => disp.Add(disposable);
+
     public virtual void Dispose()
     {
         signalSpace.RemoveListener(this);
