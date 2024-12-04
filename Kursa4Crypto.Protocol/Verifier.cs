@@ -43,11 +43,16 @@ public class Verifier(SignalSpace signalSpace) : ProtocolEntity(IdService.GetVer
 
         var data = InitializationPacket.Data.Deserialize(dataBytes);
 
+        SendMessage($"Received initialization packet from prover #{packet.ProverId}. "
+            + $"challengeNumber={data.ChallengeNumber}, responseNumber={data.ResponseNumber}");
+
         var processState = new ProveProcessState(packet.ProverId, data.ChallengeNumber, data.ResponseNumber);
         processes[packet.ProverId] = processState;
 
         var challengePacket = new ChallengePacket(packet.ProverId, processState.ChallengeNumber);
         Transmit(challengePacket.Serialize());
+
+        SendMessage($"Sending challenge packet to prover #{challengePacket.ProverId} with number={challengePacket.ChallengeNumber}");
 
         return null;
     }
@@ -58,7 +63,7 @@ public class Verifier(SignalSpace signalSpace) : ProtocolEntity(IdService.GetVer
             return $"Prove process is not running";
 
         if (packet.ResponseNumber != processState.ResponseNumber)
-            return $"Invalid response number";
+            return $"Invalid response number={packet.ResponseNumber}";
 
         if (!KeysStorage.Instance.TryGetProverKey(packet.ProverId, out var proverKey))
             return "Prover key not found";
@@ -71,6 +76,8 @@ public class Verifier(SignalSpace signalSpace) : ProtocolEntity(IdService.GetVer
 
         var resultPacket = new ResultPacket(packet.ProverId, encryptedData);
         Transmit(resultPacket.Serialize());
+
+        SendMessage($"Sending result packet to prover #{resultPacket.ProverId} with distance={data.Distance}");
 
         return null;
     }

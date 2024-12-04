@@ -25,8 +25,9 @@ public class Prover(SignalSpace signalSpace) : ProtocolEntity(IdService.GetProve
         var data = new InitializationPacket.Data(proveProcess.ChallengeNumber, proveProcess.ResponseNumber);
         var encryptedData = EncryptionService.Encrypt(data.Serialize(), verifierKey);
         var packet = new InitializationPacket(Id, encryptedData);
-
         Transmit(packet.Serialize());
+
+        SendMessage($"Starting proving process: verifier={verifierId}, challenge={data.ChallengeNumber}, response={data.ResponseNumber}");
     }
 
     protected override string? HandlePacket(Packet packet)
@@ -61,10 +62,14 @@ public class Prover(SignalSpace signalSpace) : ProtocolEntity(IdService.GetProve
             return "Prove process has not being started";
 
         if (challengePacket.ChallengeNumber != proveProcess.ChallengeNumber)
-            return "Invalid challenge number";
+            return $"Invalid challenge number={challengePacket.ChallengeNumber}";
+
+        SendMessage($"Received challenge packet with valid challengeNumber: {challengePacket.ChallengeNumber}");
 
         var response = new ResponsePacket(Id, proveProcess.ResponseNumber);
         Transmit(response.Serialize());
+
+        SendMessage($"Sending response packet with number: {response.ResponseNumber}");
 
         return null;
     }

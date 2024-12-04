@@ -47,17 +47,16 @@ public abstract class ProtocolEntity : ISignalListener, IDisposable
 
     public virtual void ReceiveSignal(byte[] signal, float force)
     {
-        var packet = PacketParser.Parse(signal);
-        if (packet == null)
+        if (!PacketParser.TryParse(signal, out var packet))
         {
             SendMessage("Received invalid packet!");
             return;
         }
 
-        var message = HandlePacket(packet);
+        var message = HandlePacket(packet!);
         if (!string.IsNullOrEmpty(message))
         {
-            SendMessage($"Cannot handle packet of type {packet.GetType()} from prover {packet.ProverId}: {message}");
+            SendMessage($"Cannot handle packet of type {packet!.GetType().Name} from prover {packet.ProverId}: {message}");
         }
     }
 

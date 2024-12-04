@@ -36,6 +36,7 @@ public class SignalSpace
     public void Transmit(byte[] data, Vector2 source, float force)
     {
         var signal = new ActiveSignal(data, source, force);
+
         activeSignals.AddLast(signal);
         onSignalCreated.OnNext(signal);
     }
@@ -44,24 +45,19 @@ public class SignalSpace
     {
         onTick.OnNext(settings.StepDuration);
 
-        var fadedSignals = new List<ActiveSignal>();
-        foreach (var signal in activeSignals)
+        var signals = new List<ActiveSignal>(activeSignals);
+        foreach (var signal in signals)
         {
             signal.Tick(settings.SignalSpeed, settings.SignalFade);
 
             if (signal.Force <= settings.SignalFadeThreshold)
             {
-                fadedSignals.Add(signal);
+                onSignalFadeOut.OnNext(signal);
+                activeSignals.Remove(signal);
                 continue;
             }
 
             signal.UpdateListeners(settings.SignalSpeed, listeners);
-        }
-
-        foreach (var signal in fadedSignals)
-        {
-            onSignalFadeOut.OnNext(signal);
-            activeSignals.Remove(signal);
         }
     }
 

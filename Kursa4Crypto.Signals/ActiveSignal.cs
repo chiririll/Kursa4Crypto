@@ -29,14 +29,11 @@ public class ActiveSignal : IActiveSignal
 
     public void UpdateListeners(float stepSize, IEnumerable<ISignalListener> listeners)
     {
-        var sqrCurrentDistance = Distance * Distance;
-
         foreach (var listener in listeners)
         {
-            var sqrDistance = Vector2.DistanceSquared(listener.Position, Source);
+            var distance = Vector2.Distance(listener.Position, Source);
 
-            // Half step size
-            if (MathF.Abs(sqrDistance - sqrCurrentDistance) > stepSize)
+            if (MathF.Abs(Distance - distance) <= (stepSize / 2f))
                 continue;
 
             listener.ReceiveSignal(Data, Force);
