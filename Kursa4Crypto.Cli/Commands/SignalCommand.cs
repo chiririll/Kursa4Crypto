@@ -1,3 +1,7 @@
+using System.Text;
+using System.Text.RegularExpressions;
+using Kursa4Crypto.Signals;
+
 namespace Kursa4Crypto.Cli.Commands;
 
 [AutoRegister]
@@ -10,6 +14,7 @@ public class SignalCommand(Program program) : BaseCompositeCommand(program)
     [
         new ListSubcommand(this),
         new AddSubcommand(this),
+        new ShowSubcommand(this),
     ];
 
     private class ListSubcommand(SignalCommand signalCommand) : Command<SignalCommand>(signalCommand)
@@ -65,6 +70,49 @@ public class SignalCommand(Program program) : BaseCompositeCommand(program)
 
             Parent.Parent.State.SignalSpace.Transmit([], new(x, y), force);
             Console.WriteLine("Signal added");
+        }
+    }
+
+    private class ShowSubcommand(SignalCommand parent) : Command<SignalCommand>(parent)
+    {
+        public override string Name => "show";
+        public override string Description => "Shows signal data";
+        public override string? OptionsString => "<signal id>";
+
+        public override void Execute(string[] args)
+        {
+            if (!GetArgument<int>(args, 1, out var id) && !InvalidArgument(nameof(id)))
+                return;
+
+            var signalSpace = Parent.Parent.State.SignalSpace;
+
+            var signal = (IActiveSignal?)null;
+            var signalIndex = 1;
+
+            foreach (var signalIterator in signalSpace.ActiveSignals)
+            {
+                if (signalIndex++ < id) continue;
+
+                signal = signalIterator;
+                break;
+            }
+
+            if (signal == null)
+            {
+                Console.WriteLine("Signal not found!");
+                return;
+            }
+
+            var dataString = Encoding.GetEncoding("ascii").GetString(signal.Data);
+            dataString = Regex.Replace(dataString, @"\p{C}+", ".");
+
+            const int lineLength = 16;
+            for (var i = 0; i < dataString.Length; i++)
+            {
+                if (i % lineLength == 0)
+                    Console.Write("\n");
+                Console.Write(dataString[i]);
+            }
         }
     }
 }
