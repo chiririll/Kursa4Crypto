@@ -1,6 +1,5 @@
 using System.Globalization;
 using System.Numerics;
-using Kursa4Crypto.Cli.Commands.Base;
 
 namespace Kursa4Crypto.Cli.Commands;
 

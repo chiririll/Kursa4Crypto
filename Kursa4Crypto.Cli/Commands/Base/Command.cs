@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Numerics;
 
-namespace Kursa4Crypto.Cli.Commands.Base;
+namespace Kursa4Crypto.Cli.Commands;
 
 public abstract class Command<TParent>(TParent parent) : ICommand
 {

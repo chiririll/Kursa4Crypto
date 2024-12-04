@@ -1,4 +1,4 @@
-namespace Kursa4Crypto.Cli.Commands.Base;
+namespace Kursa4Crypto.Cli.Commands;
 
 public abstract class CompositeCommand<TBase> : Command<TBase>
 {

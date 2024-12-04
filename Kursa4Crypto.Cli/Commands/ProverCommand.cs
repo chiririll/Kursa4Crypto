@@ -1,5 +1,4 @@
 using System.Numerics;
-using Kursa4Crypto.Cli.Commands.Base;
 using Kursa4Crypto.Protocol;
 
 namespace Kursa4Crypto.Cli.Commands;
