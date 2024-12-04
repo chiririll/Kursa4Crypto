@@ -4,7 +4,7 @@ namespace Kursa4Crypto.Protocol;
 
 public class EncryptionService
 {
-    public const int KeySize = 256;
+    public const int KeySize = 2048;
     public const bool DoOAEPPadding = false;
 
     public static byte[] Encrypt(byte[] data, RSAParameters publicKey)

@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kursa4Crypto.Signals\Kursa4Crypto.Signals.csproj" />
+    <ProjectReference Include="..\Kursa4Crypto.Protocol\Kursa4Crypto.Protocol.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
