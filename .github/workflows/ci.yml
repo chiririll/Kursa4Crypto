@@ -1,13 +1,13 @@
-name: Build Main
+name: Build Release Artifacts
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*.*.*'
   workflow_dispatch:
 
 jobs:
-  build-win64:
+  build:
     name: Build Windows x64
     runs-on: ubuntu-latest
     steps:
@@ -20,6 +20,9 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
+
+      - name: Version Bump
+        run: sed -Ei "s|<VersionPrefix>[0-9]*\.[0-9]*\.[0-9]*</VersionPrefix>|<VersionPrefix>${GITHUB_REF_NAME:1}</VersionPrefix>|g" Kursa4Crypto.Cli/Kursa4Crypto.Cli.csproj
 
       - name: Build
         run: dotnet build -c Release
