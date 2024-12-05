@@ -45,10 +45,13 @@ public class SignalSpace
     {
         onTick.OnNext(settings.StepDuration);
 
+        var signalStep = settings.SignalSpeed * settings.StepDuration;
+        var signalFade = settings.SignalFade * settings.StepDuration;
+
         var signals = new List<ActiveSignal>(activeSignals);
         foreach (var signal in signals)
         {
-            signal.Tick(settings.SignalSpeed, settings.SignalFade);
+            signal.Tick(signalStep, signalFade);
 
             if (signal.Force <= settings.SignalFadeThreshold)
             {
@@ -57,7 +60,7 @@ public class SignalSpace
                 continue;
             }
 
-            signal.UpdateListeners(settings.SignalSpeed, listeners);
+            signal.UpdateListeners(signalStep, listeners);
         }
     }
 

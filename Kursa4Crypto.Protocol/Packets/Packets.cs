@@ -59,9 +59,8 @@ public abstract class EncryptedPacket(PacketType type, int proverId, byte[] encr
         public byte[] Serialize()
         {
             var bytes = GetBytes();
-            var length = BitConverter.GetBytes(bytes.Count);
 
-            return length.Concat(bytes).ToArray();
+            return bytes.ToArray();
         }
     }
 }

@@ -68,7 +68,7 @@ public class Verifier(SignalSpace signalSpace) : ProtocolEntity(IdService.GetVer
         if (!KeysStorage.Instance.TryGetProverKey(packet.ProverId, out var proverKey))
             return "Prover key not found";
 
-        var distance = signalSpace.Settings.SignalSpeed * processState.ProveTime;
+        var distance = signalSpace.Settings.SignalSpeed * processState.ProveTime / 2f;
         var success = distance <= MaxProverDistance;
 
         var data = new ResultPacket.Data(success, distance);
@@ -76,6 +76,8 @@ public class Verifier(SignalSpace signalSpace) : ProtocolEntity(IdService.GetVer
 
         var resultPacket = new ResultPacket(packet.ProverId, encryptedData);
         Transmit(resultPacket.Serialize());
+
+        processes.Remove(packet.ProverId);
 
         SendMessage($"Sending result packet to prover #{resultPacket.ProverId} with distance={data.Distance}");
 

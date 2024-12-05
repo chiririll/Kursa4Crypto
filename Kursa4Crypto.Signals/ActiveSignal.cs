@@ -21,19 +21,20 @@ public class ActiveSignal : IActiveSignal
     public float Distance { get; private set; }
     public float Force { get; private set; }
 
-    public void Tick(float distance, float fade)
+    public void Tick(float stepSize, float fade)
     {
-        Distance += distance;
+        Distance += stepSize;
         Force -= fade;
     }
 
     public void UpdateListeners(float stepSize, IEnumerable<ISignalListener> listeners)
     {
+        var halfStep = stepSize / 2f;
         foreach (var listener in listeners)
         {
-            var distance = Vector2.Distance(listener.Position, Source);
+            var distance = Vector2.Distance(Source, listener.Position);
 
-            if (MathF.Abs(Distance - distance) <= (stepSize / 2f))
+            if (Math.Abs(distance - Distance) > halfStep)
                 continue;
 
             listener.ReceiveSignal(Data, Force);
