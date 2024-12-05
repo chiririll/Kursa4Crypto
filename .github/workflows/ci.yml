@@ -1,13 +1,15 @@
-name: Continuous Integration
+name: Build Main
+
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+
 env:
-  DOTNET_VERSION: 8.0.x
   PROJECT_NAME: Kursa4Crypto.Cli
   PROJECT_PATH: $PROJECT_NAME/$PROJECT_NAME.csproj
+
 jobs:
   build-win64:
     name: Build Windows x64
@@ -21,35 +23,23 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: $DOTNET_VERSION
+          dotnet-version: 8.0.x
+
       - name: Build
         run: dotnet build -c Release
-      - name: Publish
-        run: dotnet publish $PROJECT_PATH -c Release -o publish -r win-x64
-      - name: Upload Artifact
+      
+      - name: Publish Win64
+        run: dotnet publish $PROJECT_PATH -c Release -o publish-win64 -r win-x64
+      - name: Upload Win64 Artifact
         uses: actions/upload-artifact@v4
         with:
           name: $PROJECT_NAME-win64
-          path: publish
-  build-linux:
-    name: Build Linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          lfs: true
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: $DOTNET_VERSION
-      - name: Build
-        run: dotnet build -c Release
-      - name: Publish
-        run: dotnet publish $PROJECT_PATH -c Release -o publish -r linux-x64
-      - name: Upload Artifact
+          path: publish-win64
+
+      - name: Publish Linux64
+        run: dotnet publish $PROJECT_PATH -c Release -o publish-linux64 -r linux-x64
+      - name: Upload Linux64 Artifact
         uses: actions/upload-artifact@v4
         with:
           name: $PROJECT_NAME-linux64
-          path: publish
+          path: publish-linux64
