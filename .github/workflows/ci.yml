@@ -6,10 +6,6 @@ on:
       - main
   workflow_dispatch:
 
-env:
-  PROJECT_NAME: Kursa4Crypto.Cli
-  PROJECT_PATH: $PROJECT_NAME/$PROJECT_NAME.csproj
-
 jobs:
   build-win64:
     name: Build Windows x64
@@ -29,17 +25,17 @@ jobs:
         run: dotnet build -c Release
       
       - name: Publish Win64
-        run: dotnet publish $PROJECT_PATH -c Release -o publish-win64 -r win-x64
+        run: dotnet publish Kursa4Crypto.Cli/Kursa4Crypto.Cli.csproj -c Release -o publish-win64 -r win-x64
       - name: Upload Win64 Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: $PROJECT_NAME-win64
+          name: Kursa4Crypto.Cli-win64
           path: publish-win64
 
       - name: Publish Linux64
-        run: dotnet publish $PROJECT_PATH -c Release -o publish-linux64 -r linux-x64
+        run: dotnet publish Kursa4Crypto.Cli/Kursa4Crypto.Cli.csproj -c Release -o publish-linux64 -r linux-x64
       - name: Upload Linux64 Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: $PROJECT_NAME-linux64
+          name: Kursa4Crypto.Cli-linux64
           path: publish-linux64
