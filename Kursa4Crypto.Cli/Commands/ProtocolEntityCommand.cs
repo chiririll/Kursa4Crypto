@@ -109,7 +109,7 @@ public abstract class ProtocolEntityCommand<TEntity, TCommand>(Program program, 
     {
         public override string Name => "move";
         public override string Description => $"Moves {Parent.entityName}";
-        public override string? OptionsString => "<x> <y>";
+        public override string? OptionsString => "<id> <x> <y>";
 
         public override void Execute(string[] args)
         {

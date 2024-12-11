@@ -84,6 +84,12 @@ public class Verifier(SignalSpace signalSpace) : ProtocolEntity(IdService.GetVer
         return null;
     }
 
+    public override string ToString()
+    {
+        return base.ToString()
+            + $"max_distance: {MaxProverDistance} ";
+    }
+
     private class ProveProcessState(int proverId, long challengeNumber, long responseNumber)
     {
         public int ProverId { get; } = proverId;
